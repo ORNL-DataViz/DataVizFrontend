@@ -112,6 +112,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &36297197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 36297198}
+  m_Layer: 0
+  m_Name: TrialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &36297198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36297197}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.5591574, y: -1.3004093, z: 6.2355375}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 164379162}
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &139656562
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,6 +213,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139656562}
   m_CullTransparentMesh: 0
+--- !u!1 &164379161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 164379162}
+  - component: {fileID: 164379163}
+  m_Layer: 0
+  m_Name: PhotoPipeline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &164379162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164379161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 36297198}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &164379163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164379161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc66a2a5432f94bc6a26760c7f5056dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +337,7 @@ GameObject:
   - component: {fileID: 438903385}
   - component: {fileID: 438903384}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: PolaroidFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -584,8 +658,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1257316009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -9.62}
-  m_LocalScale: {x: 0.004, y: 0.004, z: 0.004}
+  m_LocalPosition: {x: 0, y: 0, z: -9.67}
+  m_LocalScale: {x: 0.015, y: 0.015, z: 0.004}
   m_Children:
   - {fileID: 1412200053}
   m_Father: {fileID: 0}
@@ -593,7 +667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.8}
+  m_AnchoredPosition: {x: 0, y: 0.98}
   m_SizeDelta: {x: 751, y: 187.00002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1412200052
@@ -605,7 +679,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1412200053}
-  - component: {fileID: 1412200054}
   m_Layer: 0
   m_Name: PhotoCard
   m_TagString: Untagged
@@ -629,19 +702,6 @@ Transform:
   m_Father: {fileID: 1257316013}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1412200054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412200052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44d60101452234e08962698eeb3abe56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TheImage: {fileID: 139656565}
 --- !u!1 &1432901301
 GameObject:
   m_ObjectHideFlags: 0
