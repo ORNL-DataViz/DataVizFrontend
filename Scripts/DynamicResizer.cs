@@ -13,6 +13,7 @@ public class PhotoResizer : MonoBehaviour
 
     public RawImage TheImage;
     public RectTransform PolaroidFrame;
+    private float ContainerArea = 250000; // Based off of generic 500x500 container
 
     // Start is called before the first frame update
     void Start()
@@ -79,7 +80,8 @@ public class PhotoResizer : MonoBehaviour
         /// Vector2 containing downscaled image dimensions
         /// </return>
 
-        float scale = Math.Min((PolaroidFrame.rect.height / nativeDimensions.y), (PolaroidFrame.rect.width / nativeDimensions.x));
+        float currentArea = nativeDimensions.y * nativeDimensions.x;
+        float scale = currentArea/this.ContainerArea;
         return new Vector2(nativeDimensions.x * scale, nativeDimensions.y * scale);
 
     }

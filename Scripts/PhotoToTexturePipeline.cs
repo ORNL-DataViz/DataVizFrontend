@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Diagnostics;
+using UnityEngine.UI;
 
 public class PhotoToTexturePipeline : MonoBehaviour
 {
+    public RawImage TestImage;
 
     // Arrays to sotre textures and byte arrays
     List<byte[]> imageByteArrays = new List<byte[]>();
@@ -30,7 +32,7 @@ public class PhotoToTexturePipeline : MonoBehaviour
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
         UnityEngine.Debug.Log($"Whole Program Runtime: {elapsedTime}");
-
+        TestImage.texture = processedImageTasks[0].taskImage;
     }
 
     // Update is called once per frame
@@ -72,6 +74,7 @@ public class PhotoToTexturePipeline : MonoBehaviour
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
         UnityEngine.Debug.Log($"Load Textures Runtime: {elapsedTime}");
+      
 
     }
 
@@ -117,8 +120,10 @@ public class PhotoToTexturePipeline : MonoBehaviour
 
     Texture2D ByteArrayToTexture2D(byte[] byteArrayToConvert)
     {
-        Texture2D imgText = new Texture2D(2, 2);
+        Texture2D imgText = new Texture2D(2,2 );
         imgText.LoadImage(byteArrayToConvert);
+        UnityEngine.Debug.Log(imgText.width);
+        imgText.Apply();
 
         return imgText;
     }
