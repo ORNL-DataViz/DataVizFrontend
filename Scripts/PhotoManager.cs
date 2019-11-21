@@ -5,97 +5,88 @@ using UnityEngine;
 
 public class PhotoManager : MonoBehaviour
 {
+
+    // = = = = = = = = = = = = Script-Scope Variables = = = = = = = = = = = = \\
+    private MyComponent.LinkedList rndImageList = new MyComponent.LinkedList();
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        MyComponent.LinkedList rndImageList = GameObject.FindGameObjectWithTag("LinkedList").GetComponent<ExperimentLinkedList>().photoProgressionOrder;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    // Basic Doubly Linked list structure pulled from:
-    // https://dzone.com/articles/linked-list-implementation-in-c
-    // mostly because I was too lazy to write my own and vet it - SA :P
-
-    internal class Node
-    {
-
-        internal MyComponent.ImageTask nodeImage;
-        internal Node next;
-
-        public Node(MyComponent.ImageTask newNodeImage, Node nextNode)
-        {
-            nodeImage = newNodeImage;
-            next = null;
-        }
-
-        public void addNext(Node newNext)
-        {
-            next = newNext;
-        }
 
     }
 
-    internal class DoubleLinkedList
+    // = = = = = = = = = Begin Photo Managment Functions == = = = = = = = = = \\
+
+    private MyComponent.ImageTask ListPop(int index, List<MyComponent.ImageTask> prePopList)
     {
-        internal Node head;
-        internal Node tail;
-        internal Node CDP; // Currently Displayed Photo
-        internal Node LDP; // Last Displayed photo
-        internal Node REN; // Rendered Edge Node = Farthest out rendered node
-        internal Node PEN; // Planned Edge Node = Furthest queued node to render
+        MyComponent.ImageTask temp = prePopList[index];
+        prePopList.RemoveAt(index);
 
+        return temp;
+    }
 
-        private void Add (MyComponent.ImageTask newImageNode)
+    private IEnumerator ListInitialization(List<MyComponent.ImageTask> orderedImages)
+    {
+        // Variable Toolbox
+        List<MyComponent.ImageTask> workingList = orderedImages;
+        System.Random rnd = new System.Random();
+        rndImageList = new MyComponent.LinkedList();
+        int imageCount = orderedImages.Count;
+        int loadingIncrement = 0;
+
+        // Randomization Loop
+        for (int i = 0; i < imageCount; i++)
         {
-            if( ( head == null ) && ( tail == null))
+            rndImageList.Add(ListPop(rnd.Next(0, workingList.Count), workingList));
+            loadingIncrement++;
+        }
+
+        // First 5 Image Generation
+        MyComponent.Node currentNode = rndImageList.getHead();
+
+        for (int i = 0; i < 5; i++)
+        {
+            currentNode.nodeImage.LoadTexture();
+
+            if (i == 0)
             {
-                head = new Node(newImageNode, null);
+                rndImageList.CDP = currentNode;
             }
-            else
+
+            if (i == 5)
             {
-                if( ( head != null ) && ( tail == null))
-                {
-                    tail = new Node(newImageNode, null);
-                    head.addNext(tail);
-                }
-                else
-                {
-                    Node tempNode = new Node(newImageNode, null);
-                    tail.addNext(tempNode);
-                    tail = tempNode;
-                }
+                rndImageList.REN = currentNode;
+                currentNode = currentNode.getNext();
+                currentNode = currentNode.getNext();
+                rndImageList.PEN = currentNode;
             }
 
-
+            currentNode = currentNode.getNext();
+            loadingIncrement++;
         }
 
+        yield return null;
+    }
 
-        // Node.ImageTask Manipulation functions
-        private void LoadTexture(Node nodeToLoad)
-        {
-            nodeToLoad.nodeImage.LoadTexture();
-        }
+    // = = = = = = = = = = End Photo Managment Functions = = = = = = = = = =  \\
 
-        private void UnloadTexture(Node nodeToUnload)
-        {
-            nodeToUnload.nodeImage.UnloadTexture();
-        }
+    // = = = = = = = = = = Begin Button Click Functions = = = = = = = = = = = \\
 
-        private void StoreUserInput(Node nodeToStoreTo, bool userInput, DateTime decisionPoint)
-        {
-            nodeToStoreTo.nodeImage.userCorrect = (nodeToStoreTo.nodeImage.taskCorrect == userInput);
-            nodeToStoreTo.nodeImage.userDecisionPoints.Add(userInput.ToString(), decisionPoint);
-        }
+    public void OnTrueClick()
+    {
+        String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
+        Debug.Log("true + " + timeOfDecision);
+    }
 
-        private void StoreUserUndo(Node nodeToStoreTo, DateTime decisionPoint)
-        {
-            nodeToStoreTo.nodeImage.userUndo = true;
-            nodeToStoreTo.nodeImage.userDecisionPoints.Add("undo", decisionPoint);
-        }
+    public void OnFalseClick()
+    {
+        String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
+        Debug.Log("false + " + timeOfDecision);
     }
 }
