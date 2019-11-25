@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class MyComponent : MonoBehaviour
 {
@@ -15,21 +16,29 @@ public class MyComponent : MonoBehaviour
         public bool taskCorrect;
         public bool userCorrect;
         public bool userUndo = false;
-        public Dictionary<String, DateTime> userDecisionPoints;
+        public Dictionary<String, String> userDecisionPoints = new Dictionary<string, string>();
 
-        public void UnloadTexture()
+        public void unloadTexture()
         {
             taskImage = null;
         }
 
-        public void LoadTexture()
+        public void forceLoadTexture()
         {
             taskImage = new Texture2D(2, 2);
             taskImage.LoadImage(serializedPhoto);
             taskImage.Apply();
         }
 
-     
+        public IEnumerator loadTexture()
+        {
+            taskImage = new Texture2D(2, 2);
+            taskImage.LoadImage(serializedPhoto);
+            taskImage.Apply();
+            yield return null;
+        }
+
+
     }
 
     [System.Serializable]
@@ -41,7 +50,8 @@ public class MyComponent : MonoBehaviour
         internal Node LDP; // Last Displayed photo
         internal Node REN; // Rendered Edge Node = Farthest out rendered node
         internal Node PEN; // Planned Edge Node = Furthest queued node to render
-
+        internal float len = 0;
+        internal float currentPosition = 0;
 
         public void Add(MyComponent.ImageTask newImageNode)
         {
@@ -67,34 +77,51 @@ public class MyComponent : MonoBehaviour
 
         }
 
+        public void stepForward()
+        {
+            Node tempNode = LDP;
+            LDP = CDP;
+            CDP = CDP.next;
+            tempNode.nodeImage.unloadTexture();
+            REN = REN.next;
+            PEN = PEN.next;
+        }
+
         public Node getHead()
         {
             return head;
+        }
+
+        public float getLen()
+        {
+            return len;
         }
 
 
         // Node.ImageTask Manipulation functions
         private void LoadTexture(Node nodeToLoad)
         {
-            nodeToLoad.nodeImage.LoadTexture();
+            nodeToLoad.nodeImage.loadTexture();
         }
 
         private void UnloadTexture(Node nodeToUnload)
         {
-            nodeToUnload.nodeImage.UnloadTexture();
+            nodeToUnload.nodeImage.unloadTexture();
         }
 
-        private void StoreUserInput(Node nodeToStoreTo, bool userInput, DateTime decisionPoint)
+        public void StoreUserInput(bool userInput, String decisionPoint)
         {
-            nodeToStoreTo.nodeImage.userCorrect = (nodeToStoreTo.nodeImage.taskCorrect == userInput);
-            nodeToStoreTo.nodeImage.userDecisionPoints.Add(userInput.ToString(), decisionPoint);
+            LDP.nodeImage.userCorrect = (LDP.nodeImage.taskCorrect == userInput);
+            LDP.nodeImage.userDecisionPoints.Add(decisionPoint, userInput.ToString());
         }
 
-        private void StoreUserUndo(Node nodeToStoreTo, DateTime decisionPoint)
+        public void StoreUserUndo(String decisionPoint)
         {
-            nodeToStoreTo.nodeImage.userUndo = true;
-            nodeToStoreTo.nodeImage.userDecisionPoints.Add("undo", decisionPoint);
+            LDP.nodeImage.userUndo = true;
+            LDP.nodeImage.userDecisionPoints.Add(decisionPoint, "Undo");
         }
+
+
     }
 
     [System.Serializable]
@@ -117,6 +144,11 @@ public class MyComponent : MonoBehaviour
         public Node getNext()
         {
             return next;
+        }
+
+        public Texture2D getNodeText()
+        {
+            return nodeImage.taskImage;
         }
     }
 

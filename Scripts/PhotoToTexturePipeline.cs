@@ -22,17 +22,7 @@ public class PhotoToTexturePipeline : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Stopwatch WPstop = new Stopwatch();
-        WPstop.Start();
-        LoadTextures(imageByteArrays);
-        ImageCreationManager();
-        WPstop.Stop();
-        TimeSpan ts = WPstop.Elapsed;
-        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-            ts.Hours, ts.Minutes, ts.Seconds,
-            ts.Milliseconds / 10);
-        UnityEngine.Debug.Log($"Whole Program Runtime: {elapsedTime}");
-        TestImage.texture = processedImageTasks[0].taskImage;
+      
     }
 
     // Update is called once per frame
@@ -101,21 +91,10 @@ public class PhotoToTexturePipeline : MonoBehaviour
         return TaskSets;
     }
 
-    void ImageCreationManager()
+    public MyComponent.ImageTask ImageCreationManager( Byte[] imageToConvert )
     {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        foreach(byte[] unProcessedImage in imageByteArrays)
-        {
-            Texture2D tempByteToImage = ByteArrayToTexture2D(unProcessedImage);
-            processedImageTasks.Add(imageTaskFactory(tempByteToImage));
-        }
-        stopwatch.Stop();
-        TimeSpan ts = stopwatch.Elapsed;
-        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-            ts.Hours, ts.Minutes, ts.Seconds,
-            ts.Milliseconds / 10);
-        UnityEngine.Debug.Log($"ByteArrayToTexture Runtime: {elapsedTime}");
+        Texture2D tempText = ByteArrayToTexture2D(imageToConvert);
+        return ImageTaskFactory(tempText);
     }
 
     Texture2D ByteArrayToTexture2D(byte[] byteArrayToConvert)
@@ -128,7 +107,7 @@ public class PhotoToTexturePipeline : MonoBehaviour
         return imgText;
     }
 
-    MyComponent.ImageTask imageTaskFactory(Texture2D convertedImage)
+   MyComponent.ImageTask ImageTaskFactory(Texture2D convertedImage)
     {
         MyComponent.ImageTask currentImageTask = new MyComponent.ImageTask();
         currentImageTask.taskImage = convertedImage;

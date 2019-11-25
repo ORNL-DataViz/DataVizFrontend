@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class BehaviourTestScript : MonoBehaviour
 {
+
+    public GameObject linkedListContainer;
+    private MyComponent.LinkedList rndImageList;
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(WillItHalt( 50 ));
-        UnityEngine.Debug.Log("00000000000000000000000 - HERE I AM - 000000000000000000000");
+        rndImageList = ExperimentLinkedList.photoProgressionOrder;
     }
 
     // Update is called once per frame
@@ -27,4 +29,17 @@ public class BehaviourTestScript : MonoBehaviour
         yield return 5;
     }
 
+    public void HowLong()
+    {
+        int len = 0;
+        MyComponent.Node tempNode = rndImageList.getHead();
+
+        while( tempNode.next != null)
+        {
+            len++;
+            tempNode = tempNode.next;
+        }
+
+        UnityEngine.Debug.Log(len);
+    }
 }

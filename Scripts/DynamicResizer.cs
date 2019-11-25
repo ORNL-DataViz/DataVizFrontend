@@ -7,19 +7,16 @@ using UnityEngine.Experimental.UIElements;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class PhotoResizer : MonoBehaviour
+public class DynamicResizer : MonoBehaviour
 {
     List<byte[]> TextureArray = new List<byte[]>();
 
     public RawImage TheImage;
     public RectTransform PolaroidFrame;
-    private float ContainerArea = 250000; // Based off of generic 500x500 container
 
     // Start is called before the first frame update
     void Start()
     {
-        TexturePipeline(TextureArray);
-        StartCoroutine(IterateOverPhotos(TextureArray));
     }
 
     // Update is called once per frame
@@ -70,7 +67,7 @@ public class PhotoResizer : MonoBehaviour
         }
     }
 
-    Vector2 GenerateResizedRawImageDimensions(Vector2 nativeDimensions)
+    public Vector2 GenerateResizedRawImageDimensions(Vector2 nativeDimensions)
     {
         /// <summary>
         /// Finds the larger edge of the image, calculates the necessary scaling val
@@ -79,10 +76,23 @@ public class PhotoResizer : MonoBehaviour
         /// <return>
         /// Vector2 containing downscaled image dimensions
         /// </return>
+        float targetedArea = PolaroidFrame.sizeDelta.x * PolaroidFrame.sizeDelta.y;
 
-        float currentArea = nativeDimensions.y * nativeDimensions.x;
-        float scale = currentArea/this.ContainerArea;
-        return new Vector2(nativeDimensions.x * scale, nativeDimensions.y * scale);
+        if( nativeDimensions.x > nativeDimensions.y)
+        {
+            float scale = nativeDimensions.y / nativeDimensions.x;
+            double newY = Math.Sqrt(targetedArea * scale);
+            double newX = targetedArea / newY;
+            return new Vector2((float)newX, (float)newY);
+
+        }
+        else
+        {
+            float scale = nativeDimensions.x / nativeDimensions.y;
+            double newX = Math.Sqrt(targetedArea * scale);
+            double newY = targetedArea / newX;
+            return new Vector2((float)newX, (float)newY);
+        }
 
     }
 
