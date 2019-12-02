@@ -79,6 +79,7 @@ public class MyComponent : MonoBehaviour
 
         public void stepForward()
         {
+
             Node tempNode = LDP;
             LDP = CDP;
             CDP = CDP.next;
@@ -133,7 +134,8 @@ public class MyComponent : MonoBehaviour
         public Node(MyComponent.ImageTask newNodeImage, Node nextNode)
         {
             nodeImage = newNodeImage;
-            next = null;
+            //TODO: THIS MIGHT HAVE BROKEN EVERYTHING. IT WAS NULL BEFORE
+            next = nextNode;
         }
 
         public void addNext(Node newNext)

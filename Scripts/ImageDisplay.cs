@@ -5,22 +5,26 @@ using UnityEngine.UI;
 
 public class ImageDisplay : MonoBehaviour
 {
+    // = = = = = = = = = = GameObject Attachment Points = = = = = = = = = = = \\
     public RawImage CDP_RawImage;
     public RawImage LDP_RawImage;
     public GameObject linkedListContainer;
+
+    // = = = = = = = = = = = = Script-Scope Variables = = = = = = = = = = = = \\
     private MyComponent.LinkedList rndImageList;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Attach rndImageList to static pointer
         rndImageList = ExperimentLinkedList.photoProgressionOrder;
-        //GetComponentInParent<ExperimentLinkedList>().photoProgressionOrder;
-        //
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Checks for project progression before each frame, and updates the 
+        // RawImage containers to reflect user decisions
         CDP_RawImage.rectTransform.sizeDelta = rndImageList.CDP.nodeImage.taskDimensions;
         CDP_RawImage.texture = rndImageList.CDP.nodeImage.taskImage;
         try
@@ -33,15 +37,4 @@ public class ImageDisplay : MonoBehaviour
         }
     }
 
-    void newPhoto()
-    {
-        try
-        {
-
-        }
-        catch
-        {
-            
-        }
-    }
 }

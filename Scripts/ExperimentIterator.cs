@@ -6,9 +6,11 @@ using UnityEngine.UI;
 
 public class ExperimentIterator : MonoBehaviour
 {
-    // Script Scope Variables
+    // = = = = = = = = = = = = Script-Scope Variables = = = = = = = = = = = = \\
     private MyComponent.LinkedList rndImageList;
     public DynamicResizer vectorGenerator;
+
+    // = = = = = = = = = = GameObject Attachment Points = = = = = = = = = = = \\
     public Image loadingBar;
     public Text loadingText;
 
@@ -25,23 +27,38 @@ public class ExperimentIterator : MonoBehaviour
     }
 
     // = = = = = = = = = = Begin Button Click Functions = = = = = = = = = = = \\
+    // The True/False values are derived by hard coding their values into 
+    // appropriately named functions, which are then attached to the buttons.
+    // In the future we could potentially have only one onClick function that
+    // pulls the True/False value from an attribute of the button itself. but
+    // this seemed simpler and less bug prone in the short term 
 
     public void OnTrueClick()
     {
-        if( rndImageList.LDP != null)
+        /// <summary>
+        /// Listens for clicks on ButtonCorrect.button. onClick, logs currrent 
+        /// time and "true" boolean value to the currently displayed image.
+        /// </summary>
+        /// <remarks>
+        /// if-else loop is a patch to step the list forward, because 
+        /// LinkedList.StoreUserInput utilizes the LDP node, which isn't 
+        /// generated until we've made our initial decision
+        /// </remarks>
+
+        if ( rndImageList.LDP != null)
         {
             String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
             rndImageList.currentPosition++;
             StartCoroutine(LoadTextureAndGenerateVector(rndImageList.PEN));
             rndImageList.stepForward();
-            //TODO: Pretty sure this is not tracking properly
+            //TODO: Ensure that the first selection is being properly stored
             rndImageList.StoreUserInput(true, timeOfDecision);
             float progress = (float) rndImageList.currentPosition / (float) rndImageList.len;
             loadingBar.fillAmount = progress;
-            loadingText.text = $"{(progress * 100).ToString("F2")}%";
         }
         else
         {
+            //TODO: Write helper function in ImageTask.LinkedList to cover this
             String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
             rndImageList.currentPosition++;
             StartCoroutine(LoadTextureAndGenerateVector(rndImageList.PEN));
@@ -52,12 +69,21 @@ public class ExperimentIterator : MonoBehaviour
             rndImageList.StoreUserInput(true, timeOfDecision);
             float progress = (float)rndImageList.currentPosition / (float)rndImageList.len;
             loadingBar.fillAmount = progress;
-            loadingText.text = $"{(progress * 100).ToString("F2")}%";
         }
     }
 
     public void OnFalseClick()
     {
+        /// <summary>
+        /// Listens for clicks on ButtonIncorrect.button. onClick, logs currrent 
+        /// time and "false" boolean value to the currently displayed image.
+        /// </summary>
+        /// <remarks>
+        /// if-else loop is a patch to step the list forward, because 
+        /// LinkedList.StoreUserInput utilizes the LDP node, which isn't 
+        /// generated until we've made our initial decision
+        /// </remarks>
+
         if (rndImageList.LDP != null)
         {
             String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
@@ -68,10 +94,10 @@ public class ExperimentIterator : MonoBehaviour
             rndImageList.StoreUserInput(false, timeOfDecision);
             float progress = (float)rndImageList.currentPosition / (float)rndImageList.len;
             loadingBar.fillAmount = progress;
-            loadingText.text = $"{(progress * 100).ToString("F2")}%";
         }
         else
         {
+            //TODO: Write helper function in ImageTask.LinkedList to cover this
             String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
             rndImageList.currentPosition++;
             StartCoroutine(LoadTextureAndGenerateVector(rndImageList.PEN));
@@ -82,12 +108,16 @@ public class ExperimentIterator : MonoBehaviour
             rndImageList.StoreUserInput(false, timeOfDecision);
             float progress = (float)rndImageList.currentPosition / (float)rndImageList.len;
             loadingBar.fillAmount = progress;
-            loadingText.text = $"{(progress * 100).ToString("F2")}%";
         }
     }
 
     public void OnUndoClick()
     {
+        /// <summary>
+        /// Listens for clicks on LDP_Button.button. onClick, logs currrent 
+        /// time and "undo" string value to the currently displayed image.
+        /// </summary>
+
         if (rndImageList.LDP != null)
         {
             String timeOfDecision = DateTime.Now.ToString("yyyy'-'mm'-'dd'-'HH':'mm':'ss':'fff");
@@ -97,13 +127,24 @@ public class ExperimentIterator : MonoBehaviour
             rndImageList.LDP = null;
             float progress = (float)rndImageList.currentPosition / (float)rndImageList.len;
             loadingBar.fillAmount = progress;
-            loadingText.text = $"{(progress * 100).ToString("F2")}%";
         }
     }
     // = = = = = = = = = = End Button Click Functions == = = = = = = = = = =  \\
 
     public IEnumerator LoadTextureAndGenerateVector(MyComponent.Node nodeToOperateOn)
     {
+        /// <summary>
+        /// Listens for clicks on ButtonCorrect.button. onClick, logs currrent 
+        /// time and "false" boolean value to the currently displayed image.
+        /// </summary>
+        /// <param name="nodeToOperateOn">
+        /// The node containing our targeted byte[] to generate a texture from
+        /// </param>
+        /// <remarks>
+        /// Function waits until the texture has ben generated to attempt to 
+        /// parse its dimensions for RawImage frame sizing
+        /// </remarks>
+
         yield return StartCoroutine(rndImageList.PEN.nodeImage.loadTexture());
         Vector2 origDimensions = new Vector2(
                 nodeToOperateOn.nodeImage.taskImage.width,

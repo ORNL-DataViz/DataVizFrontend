@@ -9,14 +9,17 @@ using UnityEngine.UI;
 
 public class DynamicResizer : MonoBehaviour
 {
+    // = = = = = = = = = = = = Script-Scope Variables = = = = = = = = = = = = \\
     List<byte[]> TextureArray = new List<byte[]>();
 
+    // = = = = = = = = = = GameObject Attachment Points = = = = = = = = = = = \\
     public RawImage TheImage;
     public RectTransform PolaroidFrame;
 
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     // Update is called once per frame
@@ -25,6 +28,7 @@ public class DynamicResizer : MonoBehaviour
 
     }
 
+    //TODO: Deprecate this once fully shifted over to ExperimentInitializer.CS
     void TexturePipeline(List<byte[]> workingArray)
     {
         /// <summary>
@@ -36,7 +40,7 @@ public class DynamicResizer : MonoBehaviour
         /// rewritted to work with delivery over air
         /// </remarks>
 
-        // Variable declarations (Tempo paths, future version would use WebRequests)
+        // Variable declarations (Temp paths, future version would use WebRequests)
         string dummyPhotoPath = Environment.CurrentDirectory + "/Assets/DummyPhotos";
         string[] dummyPhotoPathArray = Directory.GetFiles(dummyPhotoPath);
         String metaComparison = ".meta";
@@ -53,6 +57,7 @@ public class DynamicResizer : MonoBehaviour
 
     }
 
+    //TODO: Deprecate this once fully shifted over to ExperimentInitializer.CS
     IEnumerator IterateOverPhotos(List<byte[]> textureArray)
     {
         /// Temporary function until multithreading is built in.
@@ -76,15 +81,14 @@ public class DynamicResizer : MonoBehaviour
         /// <return>
         /// Vector2 containing downscaled image dimensions
         /// </return>
-        float targetedArea = PolaroidFrame.sizeDelta.x * PolaroidFrame.sizeDelta.y;
 
+        float targetedArea = PolaroidFrame.sizeDelta.x * PolaroidFrame.sizeDelta.y;
         if( nativeDimensions.x > nativeDimensions.y)
         {
             float scale = nativeDimensions.y / nativeDimensions.x;
             double newY = Math.Sqrt(targetedArea * scale);
             double newX = targetedArea / newY;
             return new Vector2((float)newX, (float)newY);
-
         }
         else
         {
@@ -93,7 +97,5 @@ public class DynamicResizer : MonoBehaviour
             double newY = targetedArea / newX;
             return new Vector2((float)newX, (float)newY);
         }
-
     }
-
 }

@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class ExperimentLinkedList : MonoBehaviour
 {
+    // = = = = = = = = = = Project-Wide Static Variable = = = = = = = = = = = \\
     public static MyComponent.LinkedList photoProgressionOrder;
 
     private void Awake()
     {
+        // Initializes the Static LinkedList component before the rest of the
+        // project's functionality is called
         photoProgressionOrder = new MyComponent.LinkedList();
     }
 
