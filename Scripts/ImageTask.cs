@@ -18,6 +18,12 @@ public class MyComponent : MonoBehaviour
         public bool userUndo = false;
         public Dictionary<String, String> userDecisionPoints = new Dictionary<string, string>();
 
+        public ImageTask(byte[] sp, bool tc)
+        {
+            serializedPhoto = sp;
+            taskCorrect = tc;
+        }
+
         public void unloadTexture()
         {
             taskImage = null;
@@ -32,12 +38,45 @@ public class MyComponent : MonoBehaviour
 
         public IEnumerator loadTexture()
         {
+            Debug.Log("You got into LoadTexture()");
+            // Load the texture
             taskImage = new Texture2D(2, 2);
             taskImage.LoadImage(serializedPhoto);
             taskImage.Apply();
+
+            // Generate it's proper display dimensions
+            GenerateResizedRawImageDimensions();
+
             yield return null;
         }
 
+        public void GenerateResizedRawImageDimensions()
+        {
+            /// <summary>
+            /// Finds the larger edge of the image, calculates the necessary scaling val
+            /// </summary>
+            /// <param name="nativeDimensions">Original image dimensions</param>
+            /// <return>
+            /// Vector2 containing downscaled image dimensions
+            /// </return>
+
+            Vector2 nativeDimensions = new Vector2(taskImage.width, taskImage.height);
+            float targetedArea = 200 * 200;
+            if (nativeDimensions.x > nativeDimensions.y)
+            {
+                float scale = nativeDimensions.y / nativeDimensions.x;
+                double newY = Math.Sqrt(targetedArea * scale);
+                double newX = targetedArea / newY;
+                taskDimensions = new Vector2((float)newX, (float)newY);
+            }
+            else
+            {
+                float scale = nativeDimensions.x / nativeDimensions.y;
+                double newX = Math.Sqrt(targetedArea * scale);
+                double newY = targetedArea / newX;
+                taskDimensions = new Vector2((float)newX, (float)newY);
+            }
+        }
 
     }
 
@@ -47,29 +86,29 @@ public class MyComponent : MonoBehaviour
         internal Node head = null;
         internal Node tail = null;
         internal Node CDP; // Currently Displayed Photo
-        internal Node LDP; // Last Displayed photo
+        internal Node LDP = null; // Last Displayed photo
         internal Node REN; // Rendered Edge Node = Farthest out rendered node
         internal Node PEN; // Planned Edge Node = Furthest queued node to render
         internal float len = 0;
         internal float currentPosition = 0;
 
-        public void Add(MyComponent.ImageTask newImageNode)
+        public void Add(MyComponent.Node newImageNode)
         {
             if ((head == null) && (tail == null))
             {
-                head = new Node(newImageNode, null);
+                head = newImageNode;
             }
             else
             {
                 if ((head != null) && (tail == null))
                 {
-                    tail = new Node(newImageNode, null);
-                    head.addNext(tail);
+                    tail = newImageNode;
+                    head.setNext(tail);
                 }
                 else
                 {
-                    Node tempNode = new Node(newImageNode, null);
-                    tail.addNext(tempNode);
+                    Node tempNode = newImageNode;
+                    tail.setNext(tempNode);
                     tail = tempNode;
                 }
             }
@@ -79,13 +118,25 @@ public class MyComponent : MonoBehaviour
 
         public void stepForward()
         {
+            if( PEN != null)
+            {
+               //StartCoroutine(PEN.loadTexture());
+            }
 
-            Node tempNode = LDP;
-            LDP = CDP;
-            CDP = CDP.next;
-            tempNode.nodeImage.unloadTexture();
-            REN = REN.next;
-            PEN = PEN.next;
+            if ( LDP != null)
+            {
+                Node tempNode = LDP;
+                LDP = CDP;
+                CDP = CDP.next;
+                tempNode.unloadTexture();
+                REN = REN.next;
+                PEN = PEN.next;
+            }
+            else
+            {
+
+            }
+
         }
 
         public Node getHead()
@@ -102,43 +153,56 @@ public class MyComponent : MonoBehaviour
         // Node.ImageTask Manipulation functions
         private void LoadTexture(Node nodeToLoad)
         {
-            nodeToLoad.nodeImage.loadTexture();
+            nodeToLoad.loadTexture();
         }
 
         private void UnloadTexture(Node nodeToUnload)
         {
-            nodeToUnload.nodeImage.unloadTexture();
+            nodeToUnload.unloadTexture();
         }
 
         public void StoreUserInput(bool userInput, String decisionPoint)
         {
-            LDP.nodeImage.userCorrect = (LDP.nodeImage.taskCorrect == userInput);
-            LDP.nodeImage.userDecisionPoints.Add(decisionPoint, userInput.ToString());
+            LDP.userCorrect = (LDP.taskCorrect == userInput);
+            LDP.userDecisionPoints.Add(decisionPoint, userInput.ToString());
         }
 
         public void StoreUserUndo(String decisionPoint)
         {
-            LDP.nodeImage.userUndo = true;
-            LDP.nodeImage.userDecisionPoints.Add(decisionPoint, "Undo");
+            LDP.userUndo = true;
+            LDP.userDecisionPoints.Add(decisionPoint, "Undo");
         }
 
+        public float scoreLinkedList()
+        {
+            Node tempNode = head;
+            int score = 0;
+            while( tempNode != null)
+            {
+                if (tempNode.userCorrect)
+                {
+                    score++;
+                }
+                tempNode = tempNode.getNext();
+            }
+
+            return score / len;
+
+        }
 
     }
 
     [System.Serializable]
-    public class Node
+    public class Node : ImageTask
     {
-        internal ImageTask nodeImage;
         internal Node next;
 
-        public Node(MyComponent.ImageTask newNodeImage, Node nextNode)
+        public Node(Node nextNode, byte[] sp, bool tc) : base(sp, tc)
         {
-            nodeImage = newNodeImage;
-            //TODO: THIS MIGHT HAVE BROKEN EVERYTHING. IT WAS NULL BEFORE
             next = nextNode;
         }
 
-        public void addNext(Node newNext)
+        public void setNext(Node newNext)
         {
             next = newNext;
         }
@@ -148,10 +212,6 @@ public class MyComponent : MonoBehaviour
             return next;
         }
 
-        public Texture2D getNodeText()
-        {
-            return nodeImage.taskImage;
-        }
     }
 
 }

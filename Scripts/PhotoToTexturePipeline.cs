@@ -1,7 +1,8 @@
-﻿using System;
+﻿
+using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 using System.Diagnostics;
 using UnityEngine.UI;
 
@@ -91,11 +92,11 @@ public class PhotoToTexturePipeline : MonoBehaviour
         return TaskSets;
     }
 
-    public MyComponent.ImageTask ImageCreationManager( Byte[] imageToConvert )
-    {
-        Texture2D tempText = ByteArrayToTexture2D(imageToConvert);
-        return ImageTaskFactory(tempText);
-    }
+    //public MyComponent.ImageTask ImageCreationManager( Byte[] imageToConvert )
+    //{
+    //    Texture2D tempText = ByteArrayToTexture2D(imageToConvert);
+    //    return ImageTaskFactory(tempText);
+    //}
 
     Texture2D ByteArrayToTexture2D(byte[] byteArrayToConvert)
     {
@@ -107,14 +108,14 @@ public class PhotoToTexturePipeline : MonoBehaviour
         return imgText;
     }
 
-   MyComponent.ImageTask ImageTaskFactory(Texture2D convertedImage)
-    {
-        MyComponent.ImageTask currentImageTask = new MyComponent.ImageTask();
-        currentImageTask.taskImage = convertedImage;
-        currentImageTask.photoID = indexPicker.Next(1000, 10000);
+   //MyComponent.ImageTask ImageTaskFactory(Texture2D convertedImage)
+    //{
+    //    MyComponent.ImageTask currentImageTask = new MyComponent.ImageTask();
+    //    currentImageTask.taskImage = convertedImage;
+    //    currentImageTask.photoID = indexPicker.Next(1000, 10000);
 
-        return currentImageTask;
-    }
+    //    return currentImageTask;
+    //}
 
     byte[] BytePop(List<byte[]> imageArray, int index)
     {
