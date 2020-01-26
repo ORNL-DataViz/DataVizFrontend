@@ -23,6 +23,7 @@ public class LoginManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Currently requires two "Enter" keystrokes, need to adjust
         if (pinInput.isFocused && pinInput.text.Length == 4 && Input.GetKey(KeyCode.Return))
         {
             ReadUserPin();
