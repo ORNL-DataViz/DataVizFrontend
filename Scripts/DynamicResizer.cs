@@ -9,6 +9,12 @@ using UnityEngine.UI;
 
 public class DynamicResizer : MonoBehaviour
 {
+    // = = = = = = = = = = = = = DEPRECATION WARNING = = = = = = = = = = = = =\\
+    // = SCRIPT NO LONGER IN USE, WILL BE DEPRECATED IN NEXT VERSION RELEASE =\\
+    // = = = = = ALL FUNCTIONALITY CAN BE FOUND WITHIN IMAGETASK.CS = = = = = \\
+    // = = DO NO ACCESS FUNCTIONS THROUGH THIS SCRIPT BEGINNING 01.26.2019 = =\\
+    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =\\
+
     // = = = = = = = = = = = = Script-Scope Variables = = = = = = = = = = = = \\
     List<byte[]> TextureArray = new List<byte[]>();
 

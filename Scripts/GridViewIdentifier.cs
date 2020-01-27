@@ -6,7 +6,7 @@ public class GridViewIdentifier : MonoBehaviour
 {
 
     // = = = = = = = = = = Project-Wide Static Variable = = = = = = = = = = = \\
-    public static bool GridView = false;
+    public static bool GridView = true;
 
     private void Awake()
     {

@@ -16,7 +16,7 @@ public class MyComponent : MonoBehaviour
         public bool taskCorrect;
         public bool userCorrect;
         public bool userUndo = false;
-        public Dictionary<String, String> userDecisionPoints = new Dictionary<string, string>();
+        public List<List<string>> userDecisionPoints = new List<List<string>>();
 
         public ImageTask(byte[] sp, bool tc)
         {
@@ -38,7 +38,6 @@ public class MyComponent : MonoBehaviour
 
         public IEnumerator loadTexture()
         {
-            Debug.Log("You got into LoadTexture()");
             // Load the texture
             taskImage = new Texture2D(2, 2);
             taskImage.LoadImage(serializedPhoto);
@@ -78,6 +77,14 @@ public class MyComponent : MonoBehaviour
             }
         }
 
+        public void StoreUserInput(bool userInput, String decisionPoint)
+        {
+            userCorrect = (taskCorrect == userInput);
+            userDecisionPoints.Add(
+                new List<string>(2) { decisionPoint, userInput.ToString() }
+            );
+        }
+
     }
 
     [System.Serializable]
@@ -91,6 +98,10 @@ public class MyComponent : MonoBehaviour
         internal Node PEN; // Planned Edge Node = Furthest queued node to render
         internal float len = 0;
         internal float currentPosition = 0;
+
+        // Node Note:
+        // Grid View LDP == pointer to last CDP
+        // Grid View PEN == pointer to last REN
 
         public void Add(MyComponent.Node newImageNode)
         {
@@ -164,13 +175,17 @@ public class MyComponent : MonoBehaviour
         public void StoreUserInput(bool userInput, String decisionPoint)
         {
             LDP.userCorrect = (LDP.taskCorrect == userInput);
-            LDP.userDecisionPoints.Add(decisionPoint, userInput.ToString());
+            LDP.userDecisionPoints.Add(
+                new List<string>(2) { decisionPoint, userInput.ToString() }
+            );
         }
 
         public void StoreUserUndo(String decisionPoint)
         {
             LDP.userUndo = true;
-            LDP.userDecisionPoints.Add(decisionPoint, "Undo");
+            LDP.userDecisionPoints.Add(
+                new List<string>(2) { decisionPoint, "Undo" }
+                );
         }
 
         public float scoreLinkedList()
